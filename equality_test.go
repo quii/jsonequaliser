@@ -21,9 +21,11 @@ func TestItKnowsDifferentJSONIsIncompatible(t *testing.T) {
 }
 
 func TestItKnowsHowToHandleArrays(t *testing.T) {
-	JSONWithArray := `{"foo": ["baz"]}`
+	JSONWithArray := `{"foo": ["baz", "bo"]}`
 	comparableJSONWithArray := `{"foo": ["bar"]}`
+	badlyTypedJSONArray := `{"foo": [1, 2]}`
 	assertCompatible(t, JSONWithArray, comparableJSONWithArray)
+	assertIncompatible(t, JSONWithArray, badlyTypedJSONArray)
 }
 
 func TestItDoesntMindSuperflousFieldsInB(t *testing.T) {
@@ -44,20 +46,22 @@ func TestFloatingPoints(t *testing.T) {
 	assertIncompatible(t, floatingJSONa, floatingJSONb)
 }
 
-// func TestNestedStructures(t *testing.T) {
-// 	a := `{"hello": [{"x": 1, "y": "a"},{"x": 2, "y": "b"}]`
-// 	b := `{"hello": [{"x": 10, "y": "b"}]`
-// 	assertCompatible(t, a, b)
-// }
+func TestNestedStructures(t *testing.T) {
+	a := `{"hello": [{"x": 1, "y": "a"},{"x": 2, "y": "b"}]}`
+	b := `{"hello": [{"x": 10, "y": "b"}]}`
+	c := `{"hello": [{"z": 10}]}`
+	assertCompatible(t, a, b)
+	assertIncompatible(t, a, c)
+}
 
 func assertCompatible(t *testing.T, a, b string) {
-	if compatible, _ := IsCompatible(a, b); !compatible {
-		t.Errorf("%s should be compatible with %s", a, b)
+	if compatible, err := IsCompatible(a, b); !compatible || err != nil {
+		t.Errorf("%s should be compatible with %s (err = %v)", a, b, err)
 	}
 }
 
 func assertIncompatible(t *testing.T, a, b string) {
-	if compatible, _ := IsCompatible(a, b); compatible {
-		t.Errorf("%s should not be compatible with %s", a, b)
+	if compatible, err := IsCompatible(a, b); compatible || err != nil {
+		t.Errorf("%s should not be compatible with %s (err = %v)", a, b, err)
 	}
 }

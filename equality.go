@@ -2,7 +2,7 @@ package jsonequaliser
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"reflect"
 )
 
@@ -53,14 +53,38 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 				return false, nil
 			}
 
-		default:
-			r := reflect.TypeOf(v)
-			log.Printf("Other:%v\n", r)
+		case interface{}:
+			aArr, aIsArray := a[k].([]interface{})
 
-		case []interface{}:
-			aLeaf, _ := a[k].(map[string]interface{})
-			bLeaf, _ := b[k].(map[string]interface{})
-			return isStructurallyTheSame(aLeaf, bLeaf)
+			if aIsArray {
+				bArr, bIsArray := b[k].([]interface{})
+
+				if !bIsArray {
+					return false, nil
+				}
+
+				aLeaf, aIsMap := aArr[0].(map[string]interface{})
+				bLeaf, bIsMap := bArr[0].(map[string]interface{})
+
+				if aIsMap && bIsMap {
+					return isStructurallyTheSame(aLeaf, bLeaf)
+				} else if aIsMap && !bIsMap {
+					return false, nil
+				} else {
+					return reflect.TypeOf(aArr[0]) == reflect.TypeOf(bArr[0]), nil
+				}
+			}
+
+			aLeaf, aIsMap := a[k].(map[string]interface{})
+			bLeaf, bIsMap := b[k].(map[string]interface{})
+
+			if aIsMap && bIsMap {
+				return isStructurallyTheSame(aLeaf, bLeaf)
+			}
+			return false, nil
+
+		default:
+			return false, fmt.Errorf("Unmatched type of json found, got a %v", reflect.TypeOf(v))
 		}
 
 	}
