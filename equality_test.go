@@ -20,7 +20,7 @@ func TestItKnowsStructurallySameJSONIsCompatible(t *testing.T) {
 	}
 }
 
-func TestItKnowsDifferentJSONIsDifferent(t *testing.T) {
+func TestItKnowsDifferentJSONIsIncompatible(t *testing.T) {
 	if equal, _ := IsCompatible(simpleJSON, notSimilarJSON); equal {
 		shouldntBeCompatible(t, simpleJSON, notSimilarJSON)
 	}
@@ -36,7 +36,7 @@ func TestItKnowsHowToHandleArrays(t *testing.T) {
 }
 
 func TestItDoesntMindSuperflousFieldsInB(t *testing.T) {
-	extraJSON := `{"firstname":"frank", "lastname": "sinatra", "eyecolour": "blue", "age":70}`
+	extraJSON := `{"firstname":"frank", "lastname": "sinatra", "extra field": "blue", "age":70}`
 
 	if equal, _ := IsCompatible(simpleJSON, extraJSON); !equal {
 		shouldBeCompatible(t, simpleJSON, extraJSON)
