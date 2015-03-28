@@ -20,44 +20,38 @@ func IsCompatible(a, b string) (bool, error) {
 	}
 
 	return isStructurallyTheSame(aMap, bMap)
-
 }
 
 func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
-	for k, v := range a {
+	for keyInA, v := range a {
 
-		if b[k] == nil {
+		if b[keyInA] == nil {
 			return false, nil
 		}
 
 		switch v.(type) {
 		case string:
-			_, isString := b[k].(string)
-			if !isString {
+			if _, isString := b[keyInA].(string); !isString {
 				return false, nil
 			}
 		case int:
-			_, isInt := b[k].(int)
-			if !isInt {
+			if _, isInt := b[keyInA].(int); !isInt {
 				return false, nil
 			}
 		case bool:
-			_, isBool := b[k].(bool)
-			if !isBool {
+			if _, isBool := b[keyInA].(bool); !isBool {
 				return false, nil
 			}
-
 		case float64:
-			_, isFloat := b[k].(float64)
-			if !isFloat {
+			if _, isFloat := b[keyInA].(float64); !isFloat {
 				return false, nil
 			}
 
 		case interface{}:
-			aArr, aIsArray := a[k].([]interface{})
+			aArr, aIsArray := a[keyInA].([]interface{})
 
 			if aIsArray {
-				bArr, bIsArray := b[k].([]interface{})
+				bArr, bIsArray := b[keyInA].([]interface{})
 
 				if !bIsArray {
 					return false, nil
@@ -75,8 +69,8 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 				}
 			}
 
-			aLeaf, aIsMap := a[k].(map[string]interface{})
-			bLeaf, bIsMap := b[k].(map[string]interface{})
+			aLeaf, aIsMap := a[keyInA].(map[string]interface{})
+			bLeaf, bIsMap := b[keyInA].(map[string]interface{})
 
 			if aIsMap && bIsMap {
 				return isStructurallyTheSame(aLeaf, bLeaf)
