@@ -2,6 +2,8 @@ package jsonequaliser
 
 import (
 	"encoding/json"
+	"log"
+	"reflect"
 )
 
 // IsCompatible checks that two json strings are structurally the same so that they are compatible. The first string should be your "correct" json, if there are extra fields in B then they will still be seen as compatible
@@ -45,6 +47,16 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 				return false, nil
 			}
 
+		case float64:
+			_, isFloat := b[k].(float64)
+			if !isFloat {
+				return false, nil
+			}
+
+		default:
+			r := reflect.TypeOf(v)
+			log.Printf("Other:%v\n", r)
+
 		case []interface{}:
 			aLeaf, _ := a[k].(map[string]interface{})
 			bLeaf, _ := b[k].(map[string]interface{})
@@ -55,8 +67,3 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 
 	return true, nil
 }
-
-/*
-{"firstname": "chris", "lastname": "james", "age": 30}
-{"firstname":"frank", "lastname": "sinatra", "eyecolour": "blue", "age":70}
-*/
