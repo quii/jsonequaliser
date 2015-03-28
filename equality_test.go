@@ -9,38 +9,26 @@ const comparableJSON = `{"firstname": "christopher", "lastname": "james", "age":
 const notSimilarJSON = `{"foo":"bar"}`
 
 func TestItKnowsTheSameJSONIsCompatible(t *testing.T) {
-	if isCompatible, _ := IsCompatible(simpleJSON, simpleJSON); !isCompatible {
-		shouldBeCompatible(t, simpleJSON, simpleJSON)
-	}
+	assertCompatible(t, simpleJSON, simpleJSON)
 }
 
 func TestItKnowsStructurallySameJSONIsCompatible(t *testing.T) {
-	if isCompatible, _ := IsCompatible(simpleJSON, comparableJSON); !isCompatible {
-		shouldBeCompatible(t, simpleJSON, comparableJSON)
-	}
+	assertCompatible(t, simpleJSON, comparableJSON)
 }
 
 func TestItKnowsDifferentJSONIsIncompatible(t *testing.T) {
-	if equal, _ := IsCompatible(simpleJSON, notSimilarJSON); equal {
-		shouldntBeCompatible(t, simpleJSON, notSimilarJSON)
-	}
+	assertIncompatible(t, simpleJSON, notSimilarJSON)
 }
 
 func TestItKnowsHowToHandleArrays(t *testing.T) {
 	JSONWithArray := `{"foo": ["baz"]}`
 	comparableJSONWithArray := `{"foo": ["bar"]}`
-
-	if equal, _ := IsCompatible(JSONWithArray, comparableJSONWithArray); !equal {
-		shouldBeCompatible(t, JSONWithArray, comparableJSONWithArray)
-	}
+	assertCompatible(t, JSONWithArray, comparableJSONWithArray)
 }
 
 func TestItDoesntMindSuperflousFieldsInB(t *testing.T) {
 	extraJSON := `{"firstname":"frank", "lastname": "sinatra", "extra field": "blue", "age":70}`
-
-	if equal, _ := IsCompatible(simpleJSON, extraJSON); !equal {
-		shouldBeCompatible(t, simpleJSON, extraJSON)
-	}
+	assertCompatible(t, simpleJSON, extraJSON)
 }
 
 func TestItReturnsAnErrorForNonJson(t *testing.T) {
@@ -49,19 +37,27 @@ func TestItReturnsAnErrorForNonJson(t *testing.T) {
 	}
 }
 
-func TestItHandlesFloatingPoints(t *testing.T) {
+func TestFloatingPoints(t *testing.T) {
 	floatingJSONa := `{"x": 3.14, "y": "not"}`
 	floatingJSONb := `{"x": "three", "y": "not"}`
 
-	if compatible, _ := IsCompatible(floatingJSONa, floatingJSONb); compatible {
-		shouldntBeCompatible(t, floatingJSONa, floatingJSONb)
+	assertIncompatible(t, floatingJSONa, floatingJSONb)
+}
+
+// func TestNestedStructures(t *testing.T) {
+// 	a := `{"hello": [{"x": 1, "y": "a"},{"x": 2, "y": "b"}]`
+// 	b := `{"hello": [{"x": 10, "y": "b"}]`
+// 	assertCompatible(t, a, b)
+// }
+
+func assertCompatible(t *testing.T, a, b string) {
+	if compatible, _ := IsCompatible(a, b); !compatible {
+		t.Errorf("%s should be compatible with %s", a, b)
 	}
 }
 
-func shouldBeCompatible(t *testing.T, a, b string) {
-	t.Errorf("%s should be equal to %s", a, b)
-}
-
-func shouldntBeCompatible(t *testing.T, a, b string) {
-	t.Errorf("%s should not be equal to %s", a, b)
+func assertIncompatible(t *testing.T, a, b string) {
+	if compatible, _ := IsCompatible(a, b); compatible {
+		t.Errorf("%s should not be compatible with %s", a, b)
+	}
 }
