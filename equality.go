@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 )
 
-// IsEqual checks that two json strings are structurally the same
-func IsEqual(a, b string) (bool, error) {
+// IsCompatible checks that two json strings are structurally the same so that they are compatible. The first string should be your "correct" json, if there are extra fields in B then they will still be seen as compatible
+func IsCompatible(a, b string) (bool, error) {
 
 	aMap := make(map[string]interface{})
 	if err := json.Unmarshal([]byte(a), &aMap); err != nil {
@@ -55,3 +55,8 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 
 	return true, nil
 }
+
+/*
+{"firstname": "chris", "lastname": "james", "age": 30}
+{"firstname":"frank", "lastname": "sinatra", "eyecolour": "blue", "age":70}
+*/
