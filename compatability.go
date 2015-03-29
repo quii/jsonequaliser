@@ -59,8 +59,8 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 				return isStructurallyTheSame(aLeaf, bLeaf)
 			} else if aIsMap && !bIsMap {
 				return false, nil
-			} else {
-				return reflect.TypeOf(aArr[0]) == reflect.TypeOf(bArr[0]), nil
+			} else if reflect.TypeOf(aArr[0]) != reflect.TypeOf(bArr[0]) {
+				return false, nil
 			}
 		default:
 			return false, fmt.Errorf("Unmatched type of json found, got a %v", reflect.TypeOf(v))

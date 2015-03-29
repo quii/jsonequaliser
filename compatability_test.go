@@ -53,7 +53,7 @@ func TestBooleans(t *testing.T) {
 	assertIncompatible(t, boolyJSONa, notBoolyJSON)
 }
 
-func TestItKnowsHowToHandleArrays(t *testing.T) {
+func TestItKnowsHowToHandleSimpleArrays(t *testing.T) {
 	JSONWithArray := `{"foo": ["baz", "bo"]}`
 	comparableJSONWithArray := `{"foo": ["bar"]}`
 	badlyTypedJSONArray := `{"foo": [1, 2]}`
@@ -67,12 +67,14 @@ func TestItKnowsHowToHandleArrays(t *testing.T) {
 func TestNestedStructures(t *testing.T) {
 	a := `{"hello": [{"x": 1, "y": "a"},{"x": 2, "y": "b"}]}`
 	b := `{"hello": [{"x": 10, "y": "b"}]}`
-	c := `{"hello": [{"z": 10}]}`
-	d := `{"hello":[1,2,3]}`
+	c := `{"hello": [{"x": 10}]}`
+	d := `{"hello": [{"z": 10}]}`
+	e := `{"hello":[1,2,3]}`
 
 	assertCompatible(t, a, b)
 	assertIncompatible(t, a, c)
 	assertIncompatible(t, a, d)
+	assertIncompatible(t, a, e)
 }
 
 func assertCompatible(t *testing.T, a, b string) {
