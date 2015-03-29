@@ -20,14 +20,6 @@ func TestItKnowsDifferentJSONIsIncompatible(t *testing.T) {
 	assertIncompatible(t, simpleJSON, notSimilarJSON)
 }
 
-func TestItKnowsHowToHandleArrays(t *testing.T) {
-	JSONWithArray := `{"foo": ["baz", "bo"]}`
-	comparableJSONWithArray := `{"foo": ["bar"]}`
-	badlyTypedJSONArray := `{"foo": [1, 2]}`
-	assertCompatible(t, JSONWithArray, comparableJSONWithArray)
-	assertIncompatible(t, JSONWithArray, badlyTypedJSONArray)
-}
-
 func TestItDoesntMindSuperflousFieldsInB(t *testing.T) {
 	extraJSON := `{"firstname":"frank", "lastname": "sinatra", "extra field": "blue", "age":70}`
 	assertCompatible(t, simpleJSON, extraJSON)
@@ -35,28 +27,52 @@ func TestItDoesntMindSuperflousFieldsInB(t *testing.T) {
 
 func TestItReturnsAnErrorForNonJson(t *testing.T) {
 	if _, err := IsCompatible("nonsense", "not json"); err == nil {
-		t.Error("Expected an error to be returned for bad json")
+		t.Error("Expected an error to be returned when both json is bad")
+	}
+	if _, err := IsCompatible(simpleJSON, "not json"); err == nil {
+		t.Error("Expected an error to be returned when B is bad json")
 	}
 }
-
 func TestFloatingPoints(t *testing.T) {
 	floatingJSONa := `{"x": 3.14, "y": "not"}`
 	floatingJSONb := `{"x": "three", "y": "not"}`
 	assertIncompatible(t, floatingJSONa, floatingJSONb)
 }
 
+func TestStringsTypeCheck(t *testing.T) {
+	stringyJSON := `{"x":"y"}`
+	notStringyJSON := `{"x":1}`
+	assertIncompatible(t, stringyJSON, notStringyJSON)
+}
+
 func TestBooleans(t *testing.T) {
 	boolyJSONa := `{"x": true}`
 	boolyJSONb := `{"x": false}`
+	notBoolyJSON := `{"x": 1}`
 	assertCompatible(t, boolyJSONa, boolyJSONb)
+	assertIncompatible(t, boolyJSONa, notBoolyJSON)
+}
+
+func TestItKnowsHowToHandleArrays(t *testing.T) {
+	JSONWithArray := `{"foo": ["baz", "bo"]}`
+	comparableJSONWithArray := `{"foo": ["bar"]}`
+	badlyTypedJSONArray := `{"foo": [1, 2]}`
+	nonJSONArray := `{"foo":"bar"}`
+
+	assertCompatible(t, JSONWithArray, comparableJSONWithArray)
+	assertIncompatible(t, JSONWithArray, badlyTypedJSONArray)
+	assertIncompatible(t, JSONWithArray, nonJSONArray)
 }
 
 func TestNestedStructures(t *testing.T) {
 	a := `{"hello": [{"x": 1, "y": "a"},{"x": 2, "y": "b"}]}`
 	b := `{"hello": [{"x": 10, "y": "b"}]}`
 	c := `{"hello": [{"z": 10}]}`
+	d := `{"hello":[1,2,3]}`
+
 	assertCompatible(t, a, b)
 	assertIncompatible(t, a, c)
+	assertIncompatible(t, a, d)
 }
 
 func assertCompatible(t *testing.T, a, b string) {

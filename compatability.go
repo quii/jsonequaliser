@@ -34,10 +34,6 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 			if _, isString := b[keyInA].(string); !isString {
 				return false, nil
 			}
-		case int:
-			if _, isInt := b[keyInA].(int); !isInt {
-				return false, nil
-			}
 		case bool:
 			if _, isBool := b[keyInA].(bool); !isBool {
 				return false, nil
@@ -48,35 +44,24 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 			}
 
 		case interface{}:
-			aArr, aIsArray := a[keyInA].([]interface{})
+			aArr, _ := a[keyInA].([]interface{})
 
-			if aIsArray {
-				bArr, bIsArray := b[keyInA].([]interface{})
+			bArr, bIsArray := b[keyInA].([]interface{})
 
-				if !bIsArray {
-					return false, nil
-				}
-
-				aLeaf, aIsMap := aArr[0].(map[string]interface{})
-				bLeaf, bIsMap := bArr[0].(map[string]interface{})
-
-				if aIsMap && bIsMap {
-					return isStructurallyTheSame(aLeaf, bLeaf)
-				} else if aIsMap && !bIsMap {
-					return false, nil
-				} else {
-					return reflect.TypeOf(aArr[0]) == reflect.TypeOf(bArr[0]), nil
-				}
+			if !bIsArray {
+				return false, nil
 			}
 
-			aLeaf, aIsMap := a[keyInA].(map[string]interface{})
-			bLeaf, bIsMap := b[keyInA].(map[string]interface{})
+			aLeaf, aIsMap := aArr[0].(map[string]interface{})
+			bLeaf, bIsMap := bArr[0].(map[string]interface{})
 
 			if aIsMap && bIsMap {
 				return isStructurallyTheSame(aLeaf, bLeaf)
+			} else if aIsMap && !bIsMap {
+				return false, nil
+			} else {
+				return reflect.TypeOf(aArr[0]) == reflect.TypeOf(bArr[0]), nil
 			}
-			return false, nil
-
 		default:
 			return false, fmt.Errorf("Unmatched type of json found, got a %v", reflect.TypeOf(v))
 		}
