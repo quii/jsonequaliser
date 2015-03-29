@@ -80,8 +80,6 @@ func isStructurallyTheSame(a, b map[string]interface{}) (bool, error) {
 		default:
 			return false, fmt.Errorf("Unmatched type of json found, got a %v", reflect.TypeOf(v))
 		}
-
 	}
-
 	return true, nil
 }

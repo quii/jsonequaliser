@@ -42,7 +42,6 @@ func TestItReturnsAnErrorForNonJson(t *testing.T) {
 func TestFloatingPoints(t *testing.T) {
 	floatingJSONa := `{"x": 3.14, "y": "not"}`
 	floatingJSONb := `{"x": "three", "y": "not"}`
-
 	assertIncompatible(t, floatingJSONa, floatingJSONb)
 }
 
