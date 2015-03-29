@@ -45,6 +45,12 @@ func TestFloatingPoints(t *testing.T) {
 	assertIncompatible(t, floatingJSONa, floatingJSONb)
 }
 
+func TestBooleans(t *testing.T) {
+	boolyJSONa := `{"x": true}`
+	boolyJSONb := `{"x": false}`
+	assertCompatible(t, boolyJSONa, boolyJSONb)
+}
+
 func TestNestedStructures(t *testing.T) {
 	a := `{"hello": [{"x": 1, "y": "a"},{"x": 2, "y": "b"}]}`
 	b := `{"hello": [{"x": 10, "y": "b"}]}`

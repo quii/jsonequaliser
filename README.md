@@ -2,7 +2,7 @@
 
 Checks that two json strings (A and B) are compatible or not.
 
-Check the tests for examples as to how this works.
+See the tests for examples as to how this works.
 
 ## What is compatability?
 
