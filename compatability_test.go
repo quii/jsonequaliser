@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func ExampleComparison() {
+func ExampleIsCompatible() {
 	A := `{"firstname": "chris", "lastname": "james", "age": 30}`
 	B := `{"firstname": "Bob", "lastname": "Smith", "age": 25, "favourite-colour": "blue"}`
 
