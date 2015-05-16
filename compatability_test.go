@@ -1,8 +1,17 @@
 package jsonequaliser
 
 import (
+	"fmt"
 	"testing"
 )
+
+func ExampleComparison() {
+	A := `{"firstname": "chris", "lastname": "james", "age": 30}`
+	B := `{"firstname": "Bob", "lastname": "Smith", "age": 25, "favourite-colour": "blue"}`
+
+	fmt.Println(IsCompatible(A, B))
+	// Output: true <nil>
+}
 
 const simpleJSON = `{"firstname": "chris", "lastname": "james", "age": 30}`
 const comparableJSON = `{"firstname": "christopher", "lastname": "james", "age": 15}`
