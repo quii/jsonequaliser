@@ -86,6 +86,12 @@ func TestNestedStructures(t *testing.T) {
 	assertIncompatible(t, a, e)
 }
 
+func TestEmptyArrayInB(t *testing.T) {
+	a := `{"foo":["bar", "baz"]}`
+	b := `{"foo":[]}`
+	assertIncompatible(t, a, b)
+}
+
 func assertCompatible(t *testing.T, a, b string) {
 	if compatible, err := IsCompatible(a, b); !compatible || err != nil {
 		t.Errorf("%s should be compatible with %s (err = %v)", a, b, err)

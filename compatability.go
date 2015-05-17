@@ -48,7 +48,7 @@ func isStructurallyTheSame(a, b map[string]interface{}) (compatible bool, err er
 
 			bArr, bIsArray := b[keyInA].([]interface{})
 
-			if !bIsArray {
+			if !bIsArray || len(bArr) == 0 {
 				return
 			}
 
