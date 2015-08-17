@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func IgnoreTestItWithSomethingRealish(t *testing.T) {
+func TestItWithSomethingRealish(t *testing.T) {
 	A := `[{"MaterialID":"1234","ContentDate":{"From":"2005-04-20","To":"2015-12-01"},"AccessDate":{"From":"1987-04-20","To":"1990-12-01"}}]`
 	B := `[{"MaterialID":"1234","ContentDate":{"From":"2005-04-20","To":"2015-12-01"},"AccessDate":{"From":"1987-04-20","To":"1990-12-01"}}]`
 
