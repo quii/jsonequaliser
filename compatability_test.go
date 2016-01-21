@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+func TestItWorksWithNulls(t *testing.T) {
+	A := `{"total":0,"max_score":null}`
+	B := `{"total":0,"max_score":null}`
+
+	if compat, err := IsCompatible(A, B); err != nil || !compat {
+		t.Error("It broke, compat = ", compat, "err = ", err)
+	}
+}
+
 func TestItWithSomethingRealish(t *testing.T) {
 	A := `[{"MaterialID":"1234","ContentDate":{"From":"2005-04-20","To":"2015-12-01"},"AccessDate":{"From":"1987-04-20","To":"1990-12-01"}}]`
 	B := `[{"MaterialID":"1234","ContentDate":{"From":"2005-04-20","To":"2015-12-01"},"AccessDate":{"From":"1987-04-20","To":"1990-12-01"}}]`
