@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+func TestItWorksWithEmptyArrays(t *testing.T) {
+	A := `{"x": []}`
+	B := `{"x": [1,2,3]}`
+
+	if compat, err := IsCompatible(A, B); err != nil || !compat {
+		t.Error("It broke, compat = ", compat, "err = ", err)
+	}
+}
+
 func TestItWorksWithNulls(t *testing.T) {
 	A := `{"total":0,"max_score":null}`
 	B := `{"total":0,"max_score":null}`
@@ -124,7 +133,8 @@ func assertIncompatible(t *testing.T, a, b string) {
 }
 
 func BenchmarkItworks(b *testing.B) {
-	a := `{"total":0,"max_score":null,"hits":[],"categories":{"headlines":{"total":0,"labels":[]},"research":{"total":0,"labels":[]}}}`
+	a := `{"foo":[], "null": null}`
+	// a := `{"total":0,"max_score":null,"hits":[],"categories":{"headlines":{"total":0,"labels":[]},"research":{"total":0,"labels":[]}}}`
 	for i := 0; i < b.N; i++ {
 		isCompat, err := IsCompatible(a, a)
 		if err != nil {
@@ -132,8 +142,6 @@ func BenchmarkItworks(b *testing.B) {
 		}
 		if !isCompat {
 			b.Fatal("WHAT THE HELL MAN")
-		} else {
-			fmt.Println("Passed")
 		}
 
 	}
