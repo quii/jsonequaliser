@@ -122,3 +122,19 @@ func assertIncompatible(t *testing.T, a, b string) {
 		t.Errorf("%s should not be compatible with %s (err = %v)", a, b, err)
 	}
 }
+
+func BenchmarkItworks(b *testing.B) {
+	a := `{"total":0,"max_score":null,"hits":[],"categories":{"headlines":{"total":0,"labels":[]},"research":{"total":0,"labels":[]}}}`
+	for i := 0; i < b.N; i++ {
+		isCompat, err := IsCompatible(a, a)
+		if err != nil {
+			b.Fatal("IT ERRORD", err)
+		}
+		if !isCompat {
+			b.Fatal("WHAT THE HELL MAN")
+		} else {
+			fmt.Println("Passed")
+		}
+
+	}
+}
