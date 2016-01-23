@@ -14,12 +14,21 @@ func TestItWorksWithEmptyArrays(t *testing.T) {
 	}
 }
 
-func TestItWorksWithNulls(t *testing.T) {
-	A := `{"total":0,"max_score":null}`
-	B := `{"total":0,"max_score":null}`
+func TestItAssumesFieldIsCompatibleIfAisNull(t *testing.T) {
+	A := `{"max_score":null}`
+	B := `{"max_score":10}`
 
 	if compat, err := IsCompatible(A, B); err != nil || !compat {
-		t.Error("It broke, compat = ", compat, "err = ", err)
+		t.Error("It should've been compatible because we cant infer type from null = ", compat, "err = ", err)
+	}
+}
+
+func TestItChecksKeyIsInBEvenWhenValueInAIsNull(t *testing.T) {
+	A := `{"total":0,"max_score":null}`
+	B := `{"total":0}`
+
+	if compat, err := IsCompatible(A, B); err != nil || compat {
+		t.Error("It should not be compatible because key is missing in B = ", compat, "err = ", err)
 	}
 }
 
