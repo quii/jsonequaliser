@@ -37,35 +37,35 @@ func IsCompatible(a, b string) (compatible bool, err error) {
 }
 
 func isStructurallyTheSame(a, b map[string]interface{}) (compatible bool, err error) {
-	for keyInA, v := range a {
+	for jsonFieldName, v := range a {
 
-		if a[keyInA] == nil && b[keyInA] == nil {
+		if a[jsonFieldName] == nil && b[jsonFieldName] == nil {
 			return true, nil
 		}
 
-		if b[keyInA] == nil {
+		if b[jsonFieldName] == nil {
 			return
 		}
 
 		switch v.(type) {
 		case string:
-			if _, isString := b[keyInA].(string); !isString {
+			if _, isString := b[jsonFieldName].(string); !isString {
 				return
 			}
 		case bool:
-			if _, isBool := b[keyInA].(bool); !isBool {
+			if _, isBool := b[jsonFieldName].(bool); !isBool {
 				return
 			}
 		case float64:
-			if _, isFloat := b[keyInA].(float64); !isFloat {
+			if _, isFloat := b[jsonFieldName].(float64); !isFloat {
 				return
 			}
 
 		case interface{}:
 
-			aArr, aIsArray := a[keyInA].([]interface{})
+			aArr, aIsArray := a[jsonFieldName].([]interface{})
 
-			bArr, bIsArray := b[keyInA].([]interface{})
+			bArr, bIsArray := b[jsonFieldName].([]interface{})
 
 			if aIsArray && len(aArr) == 0 {
 				return true, nil
@@ -82,8 +82,8 @@ func isStructurallyTheSame(a, b map[string]interface{}) (compatible bool, err er
 				aLeaf, aIsMap = aArr[0].(map[string]interface{})
 				bLeaf, bIsMap = bArr[0].(map[string]interface{})
 			} else {
-				aLeaf, aIsMap = a[keyInA].(map[string]interface{})
-				bLeaf, bIsMap = b[keyInA].(map[string]interface{})
+				aLeaf, aIsMap = a[jsonFieldName].(map[string]interface{})
+				bLeaf, bIsMap = b[jsonFieldName].(map[string]interface{})
 			}
 
 			if aIsMap && bIsMap {
