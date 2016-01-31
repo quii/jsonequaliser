@@ -17,7 +17,7 @@ func IsCompatible(a, b string) (messages map[string]string, err error) {
 		return
 	}
 
-	return isStructurallyTheSame(aMap, bMap, make(map[string]string))
+	return isStructurallyTheSame(aMap, bMap, make(map[string]string), "")
 }
 
 var (
@@ -30,32 +30,38 @@ var (
 	msgDifferentArrayType = "Type of array is different"
 )
 
-func isStructurallyTheSame(a, b jsonNode, messages map[string]string) (map[string]string, error) {
+func isStructurallyTheSame(a, b jsonNode, messages map[string]string, baseNode string) (map[string]string, error) {
 	for jsonFieldName, v := range a {
 
+		messageNodeName := jsonFieldName
+		if baseNode != "" {
+			messageNodeName = baseNode + "->" + jsonFieldName
+		}
+
 		if fieldMissingIn(b, jsonFieldName) {
-			messages[jsonFieldName] = msgFieldMissing
+			messages[messageNodeName] = msgFieldMissing
+			continue
 		}
 
 		if a[jsonFieldName] == nil {
-			break
+			continue
 		}
 
 		switch v.(type) {
 		case string:
 			if !isString(b, jsonFieldName) {
-				messages[jsonFieldName] = msgNotString
-				break
+				messages[messageNodeName] = msgNotString
+				continue
 			}
 		case bool:
 			if !isBool(b, jsonFieldName) {
-				messages[jsonFieldName] = msgNotBool
-				break
+				messages[messageNodeName] = msgNotBool
+				continue
 			}
 		case float64:
 			if !isFloat(b, jsonFieldName) {
-				messages[jsonFieldName] = msgNotFloat
-				break
+				messages[messageNodeName] = msgNotFloat
+				continue
 			}
 
 		case interface{}:
@@ -65,12 +71,12 @@ func isStructurallyTheSame(a, b jsonNode, messages map[string]string) (map[strin
 			bArr, bIsArray := b[jsonFieldName].([]interface{})
 
 			if aIsArray && len(aArr) == 0 {
-				break
+				continue
 			}
 
 			if !bIsArray && aIsArray || aIsArray && len(bArr) == 0 {
-				messages[jsonFieldName] = msgEmptyArray
-				break
+				messages[messageNodeName] = msgEmptyArray
+				continue
 			}
 
 			var aLeaf, bLeaf jsonNode
@@ -85,17 +91,17 @@ func isStructurallyTheSame(a, b jsonNode, messages map[string]string) (map[strin
 			}
 
 			if aIsMap && bIsMap {
-				messages, err := isStructurallyTheSame(aLeaf, bLeaf, messages)
+				messages, err := isStructurallyTheSame(aLeaf, bLeaf, messages, messageNodeName)
 				if err != nil {
 					return messages, err
 				}
-				break
+				continue
 			} else if aIsMap && !bIsMap {
-				messages[jsonFieldName] = msgNotMap
-				break
+				messages[messageNodeName] = msgNotMap
+				continue
 			} else if reflect.TypeOf(aArr[0]) != reflect.TypeOf(bArr[0]) {
-				messages[jsonFieldName] = msgDifferentArrayType
-				break
+				messages[messageNodeName] = msgDifferentArrayType
+				continue
 			}
 		default:
 			return messages, fmt.Errorf("Unmatched type of json found, got a %v", reflect.TypeOf(v))
