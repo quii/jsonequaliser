@@ -8,7 +8,7 @@ import (
 type jsonNode map[string]interface{}
 
 // IsCompatible checks that two json strings are structurally the same so that they are compatible. The first string should be your "correct" json, if there are extra fields in B then they will still be seen as compatible
-func IsCompatible(a, b string) (messages map[string]string, err error) {
+func IsCompatible(a, b string) (errorMessages map[string]string, err error) {
 
 	aMap, err := getJSONNodeFromString(a)
 	bMap, err := getJSONNodeFromString(b)
