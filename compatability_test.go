@@ -11,6 +11,21 @@ func TestItWorksWithEmptyArrays(t *testing.T) {
 	}
 }
 
+func TestItEqualisesBasicArrays(t *testing.T){
+	A := `[123,200068128,444]`
+	B := `[1]`
+	
+	messages, err := IsCompatible(A, B)
+	
+	if err != nil{
+		t.Error("It shouldnt have returned an error, but it did", err)
+	}
+	
+	if len(messages) > 0 {
+		t.Error("It broke, messages = ", messages);
+	}
+}
+
 func TestItAssumesFieldIsCompatibleIfAisNull(t *testing.T) {
 	A := `{"max_score":null}`
 	B := `{"max_score":10}`
