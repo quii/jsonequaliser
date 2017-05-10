@@ -115,6 +115,18 @@ func TestEmptyArrayInB(t *testing.T) {
 	assertIncompatible(t, a, b)
 }
 
+func TestEmptyTopLevelArrayInA(t *testing.T) {
+	a := `[]`
+	b := `[{"foo":"bar"}]`
+	assertIncompatible(t, a, b)
+}
+
+func TestEmptyTopLevelArrayInB(t *testing.T) {
+	a := `[{"foo":"bar"}]`
+	b := `[]`
+	assertIncompatible(t, a, b)
+}
+
 func assertCompatible(t *testing.T, a, b string) {
 	if messages, err := IsCompatible(a, b); len(messages) > 0 || err != nil {
 		t.Errorf("%s should be compatible with %s (err = %v)", a, b, err)

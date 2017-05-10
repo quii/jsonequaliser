@@ -72,6 +72,12 @@ func TestItReportsNonFloats(t *testing.T) {
 	assertMessage(t, A, B, "x", msgNotFloat)
 }
 
+func TestItReportsEmptyArrays(t *testing.T) {
+	A := `[]`
+	B := `[]`
+	assertMessage(t, A, B, "rootArray", msgEmptyRootArray)
+}
+
 func assertMessage(t *testing.T, a, b, key, expectedMessage string) {
 	messages, err := IsCompatible(a, b)
 
